@@ -1,8 +1,10 @@
-# R-Compiler
-Mini R Compiler using C language!
+# Mini  R-Compiler
+Mini R-Compiler using C language!
 
-# Contributers
+## Contributers
 Atbib Hajar\
 Sabir AMHAIDA\
 Aymane ANAM\
 Mohammed ABDELOUAHAB
+
+## Grammaire used
