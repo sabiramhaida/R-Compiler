@@ -1,19 +1,33 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include "lexCompiler.h"
+#include "oldlexCompiler.h"
 
 void nextSymbole(){
 	while(IgnoredCaracters(currentCaractere)){
 		readCaractere();
 	}
 	if((currentCaractere>='a' && currentCaractere<='z')||(currentCaractere>='A' && currentCaractere<='Z')) readWord();
-	
 	else if (currentCaractere=='.'){
+
 		Car_suivant= fgetc(file);
 		if ((Car_suivant>='a' && Car_suivant<='z')||(Car_suivant>='A' && Car_suivant<='Z')){
 		readWord();
 		}
+
+		else if (Car_suivant>='0' && Car_suivant<='9'){
+			fl++;
+			readNumber();
+		}
+		else {
+			int _compt=0;
+			char* mot = calloc(99999,sizeof(char));
+			*(mot+_compt)=currentCaractere;
+			currentSymbole.CODE=DOT_TOKEN;
+			strcpy(currentSymbole.nom,mot);
+			readCaractere();
+		}
+		
 	}
 	else if(currentCaractere>='0' && currentCaractere<='9'){
 		readNumber();
@@ -23,7 +37,7 @@ void nextSymbole(){
 	}
 	else{
 		int _compt=0;
-		char* mot = calloc(1028,sizeof(char));
+		char* mot = calloc(99999,sizeof(char));
 		*(mot+_compt)=currentCaractere;
 		switch(currentCaractere){
 			case '+': 
@@ -182,12 +196,13 @@ void nextSymbole(){
 				// on considere pas le cas d'erreur
 				break;
 			case EOF: 
+				mot = "EOF";
 				currentSymbole.CODE=EOF_TOKEN;
-				strcpy(currentSymbole.nom,"EOF_TOKEN");
+				strcpy(currentSymbole.nom,mot);
 				break;
 			default :
 				currentSymbole.CODE=ERROR_TOKEN;
-				strcpy(currentSymbole.nom,"ERROR_TOKEN");
+				strcpy(currentSymbole.nom,mot);
 				while(!IgnoredCaracters(currentCaractere)){
 				readCaractere();
 				}
@@ -202,7 +217,7 @@ void readCaractere(){
 
 void readWord(){
 	int _compt=0;
-	char* mot = calloc(1028,sizeof(char));
+	char* mot = calloc(99999,sizeof(char));
 	*(mot+_compt)=currentCaractere;
 	if (currentCaractere=='.') {
 		 _compt++;
@@ -253,18 +268,33 @@ void readWord(){
 		currentSymbole.CODE=ID_TOKEN;
 		strcpy(currentSymbole.nom,mot);
 	}
-	memset(mot,'\0',1024);
+	memset(mot,'\0',99999);
 } 
 
 void readNumber(){
 	int _compt=0;
-	char* mot = calloc(1028,sizeof(char));
-	while(currentCaractere>='0' && currentCaractere<='9'){
-	*(mot+_compt)=currentCaractere;
+	char* mot = calloc(99999,sizeof(char));
+	if (fl==1) {
+		*(mot+_compt)=currentCaractere;
+		_compt++;
+		*(mot+_compt)=Car_suivant;
 		_compt++;
 		readCaractere();
+		}
+	while((currentCaractere>='0' && currentCaractere<='9'&& fl<=1) || (currentCaractere=='.') ){
+		*(mot+_compt)=currentCaractere;
+		_compt++;
+		if(currentCaractere=='.'){
+		fl++;
+		if(fl==2){
+			currentSymbole.CODE = ERROR_TOKEN;
+			strcpy(currentSymbole.nom,mot);
+		}
+		};
+		readCaractere();
 	}
-	*(mot+_compt+1)='\0';
+	fl=0;           
+		*(mot+_compt+1)='\0';
 	if(IgnoredCaracters(currentCaractere) || CaractereSigne(currentCaractere)){
 		currentSymbole.CODE = NUMBER_TOKEN;
 		strcpy(currentSymbole.nom,mot);
@@ -276,6 +306,7 @@ void readNumber(){
 	}
 	memset(mot,'\0',1024);
 }
+
 
 void readComment(){
 	readCaractere();
@@ -290,7 +321,8 @@ void printToken(TcurrentSymbole sym){
 	if (currentSymbole.CODE != COMMENT_TOKEN) {
 	printf("%d\n",currentSymbole.CODE);
 	printf("%s\n",currentSymbole.nom);
-	}
+	if(currentSymbole.CODE == ERROR_TOKEN) exit(0);
+}
 }
 
 void openFile(char* fileName){
@@ -312,13 +344,14 @@ int AlphaNum(char currentCaractere){
 
 int CaractereSigne(char currentCaractere){
 if(currentCaractere=='+'||currentCaractere=='*'||currentCaractere=='-'||currentCaractere=='<'||currentCaractere=='>'||currentCaractere=='/'||currentCaractere==';'||currentCaractere==')'
-||currentCaractere=='}'||currentCaractere==','||currentCaractere==']'||currentCaractere=='^'||currentCaractere==':'||currentCaractere=='!')
+||currentCaractere=='}'||currentCaractere==','||currentCaractere==']'||currentCaractere=='^'||currentCaractere==':'||currentCaractere=='!' || currentCaractere=='=')
 		return 1;
 	return 0;
 }
 
 
 int main(){
+	fileprint=fopen("scannerOutputFile.txt","w");
 	openFile("testfile.r");
 	if (file == NULL)
     {
@@ -329,8 +362,10 @@ int main(){
 	while(currentCaractere != EOF ){
 		nextSymbole();
 		printToken(currentSymbole);
+		fprintf(fileprint,"%d\n",currentSymbole.CODE);
+		fprintf(fileprint,"%s\n",currentSymbole.nom);
+		
 	}
 	//pour afficher la fin du fichier
 	return 1;
 }
-
