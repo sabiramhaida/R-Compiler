@@ -1,7 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include "oldlexCompiler.h"
+#include "lexCompiler.h"
+#include "errors.h"
 
 void nextSymbole(){
 	while(IgnoredCaracters(currentCaractere)){
@@ -13,7 +14,7 @@ void nextSymbole(){
 		Car_suivant= fgetc(file);
 		if ((Car_suivant>='a' && Car_suivant<='z')||(Car_suivant>='A' && Car_suivant<='Z')){
 		readWord();
-		}
+		}	
 
 		else if (Car_suivant>='0' && Car_suivant<='9'){
 			fl++;
@@ -27,13 +28,15 @@ void nextSymbole(){
 			strcpy(currentSymbole.nom,mot);
 			readCaractere();
 		}
-		
 	}
-	else if(currentCaractere>='0' && currentCaractere<='9'){
+	else if(currentCaractere >= '0' && currentCaractere <= '9'){
 		readNumber();
 	}
-	else if(currentCaractere=='#'){
+	else if(currentCaractere == '#'){
 		readComment();
+	}
+	else if(currentCaractere == '"'){
+		readString();
 	}
 	else{
 		int _compt=0;
@@ -264,7 +267,11 @@ void readWord(){
 	}else if(!strcmp(mot,"list")){
 		currentSymbole.CODE=LIST_TOKEN ;
 		strcpy(currentSymbole.nom,mot);
-	}else{
+	}else if(!strcmp(mot,"c")){
+		currentSymbole.CODE=C_TOKEN ;
+		strcpy(currentSymbole.nom,mot);
+	}
+	else{
 		currentSymbole.CODE=ID_TOKEN;
 		strcpy(currentSymbole.nom,mot);
 	}
@@ -295,10 +302,10 @@ void readNumber(){
 	}
 	fl=0;           
 		*(mot+_compt+1)='\0';
-	if(IgnoredCaracters(currentCaractere) || CaractereSigne(currentCaractere)){
+	if(IgnoredCaracters(currentCaractere) || CaractereSigne(currentCaractere) || currentCaractere ==EOF ){
 		currentSymbole.CODE = NUMBER_TOKEN;
 		strcpy(currentSymbole.nom,mot);
-	}else{
+		}else{
 		while(!IgnoredCaracters(currentCaractere))
 			readCaractere();
 		currentSymbole.CODE = ERROR_TOKEN;
@@ -315,6 +322,28 @@ void readComment(){
 	}
 	currentSymbole.CODE = COMMENT_TOKEN;
 	strcpy(currentSymbole.nom,"comment");
+}
+
+
+void readString(){
+	int _compt=0;
+	char* mot = calloc(1024,sizeof(char));
+	readCaractere();
+	while (currentCaractere != '"' && currentCaractere != EOF)
+	{
+		*(mot+_compt)=currentCaractere;
+		_compt++;
+		readCaractere();
+	}
+	if(currentCaractere == '"'){
+		currentSymbole.CODE = STRING_TOKEN;
+		strcpy(currentSymbole.nom,mot);
+		readCaractere();
+	}else{
+		currentSymbole.CODE = ERROR_TOKEN;
+		strcpy(currentSymbole.nom,mot);
+	}
+	memset(mot,'\0',1024);
 }
 
 void printToken(TcurrentSymbole sym){
@@ -341,7 +370,11 @@ int AlphaNum(char currentCaractere){
 		return 1;
 	return 0;
 }
-
+int letters(char currentCaractere){
+	if((currentCaractere>='a' && currentCaractere<='z')||(currentCaractere>='A' && currentCaractere<='Z'))
+		return 1;
+	return 0;
+}
 int CaractereSigne(char currentCaractere){
 if(currentCaractere=='+'||currentCaractere=='*'||currentCaractere=='-'||currentCaractere=='<'||currentCaractere=='>'||currentCaractere=='/'||currentCaractere==';'||currentCaractere==')'
 ||currentCaractere=='}'||currentCaractere==','||currentCaractere==']'||currentCaractere=='^'||currentCaractere==':'||currentCaractere=='!' || currentCaractere=='=')
@@ -364,8 +397,8 @@ int main(){
 		printToken(currentSymbole);
 		fprintf(fileprint,"%d\n",currentSymbole.CODE);
 		fprintf(fileprint,"%s\n",currentSymbole.nom);
-		
 	}
 	//pour afficher la fin du fichier
 	return 1;
 }
+
