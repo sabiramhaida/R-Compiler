@@ -1,7 +1,8 @@
 ## minicompiler-project-R ll(3)
 # Grammaire ::
 
-	D = ("<-" | "=") , "function" , "(" , ["identifier",{(",","identifier")}] , ")", "{" , {STATEMENT} , [RETURN] , "}" | C | "(" , ARGUMENTS , ")", [";"];
+	D = ("<-" | "=") , "function" , "(" , ["identifier",{(",","identifier")}] , ")", "{" , {STATEMENT} , [RETURN] , "}" 
+		| C | "(" , ARGUMENTS , ")", [";"];
 
 	ARGUMENTS = EXPRESSION , {"," , EXPRESSION};
 
@@ -35,7 +36,8 @@
 
 	LOOP = FORLOOP | REPEATLOOP | WHILELOOP;
 
-	FORLOOP = "for" , "(" , "identifier" , "in" , ("number" | FUNCTIONCALL | "identifier") , ":" , ("number" | FUNCTIONCALL | "identifier") , ")" , "{" ,{STATEMENT},"}";
+	FORLOOP = "for" , "(" , "identifier" , "in" , ("number" | FUNCTIONCALL | "identifier") ,
+		":" , ("number" | FUNCTIONCALL | "identifier") , ")" , "{" ,{STATEMENT},"}";
 
 	REPEATLOOP = "repeat" , "{" , {STATEMENT} , "}";
 
