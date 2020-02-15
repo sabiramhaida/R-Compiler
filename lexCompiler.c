@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include "lexCompiler.h"
-#include "errors.h"
+
 
 void nextSymbole(){
 	while(IgnoredCaracters(currentCaractere)){
@@ -14,7 +14,7 @@ void nextSymbole(){
 		Car_suivant= fgetc(file);
 		if ((Car_suivant>='a' && Car_suivant<='z')||(Car_suivant>='A' && Car_suivant<='Z')){
 		readWord();
-		}	
+		}
 
 		else if (Car_suivant>='0' && Car_suivant<='9'){
 			fl++;
@@ -270,12 +270,15 @@ void readWord(){
 	}else if(!strcmp(mot,"c")){
 		currentSymbole.CODE=C_TOKEN ;
 		strcpy(currentSymbole.nom,mot);
+	}else if(!strcmp(mot,"print")){
+		currentSymbole.CODE=PRINT_TOKEN	 ;
+		strcpy(currentSymbole.nom,mot);
 	}
 	else{
 		currentSymbole.CODE=ID_TOKEN;
 		strcpy(currentSymbole.nom,mot);
 	}
-	memset(mot,'\0',99999);
+	memset(mot,'\0',99999);	
 } 
 
 void readNumber(){
@@ -395,10 +398,16 @@ int main(){
 	while(currentCaractere != EOF ){
 		nextSymbole();
 		printToken(currentSymbole);
+		
+		if (currentSymbole.CODE != COMMENT_TOKEN) {
 		fprintf(fileprint,"%d\n",currentSymbole.CODE);
 		fprintf(fileprint,"%s\n",currentSymbole.nom);
-	}
-	//pour afficher la fin du fichier
+		}
+	}	if(currentSymbole.CODE!=EOF_TOKEN){
+			printf("%d\n",EOF_TOKEN);
+			printf("EOF\n");
+			fprintf(fileprint,"%d\n",EOF_TOKEN);
+			fprintf(fileprint,"%s\n","EOF");
+		}
 	return 1;
 }
-
