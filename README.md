@@ -1,5 +1,15 @@
-## minicompiler-project-R ll(3)
-# Grammaire ::
+### minicompiler-project-R ll(3)
+### Project structure
+1. Lexical parser
+2. syntaxic analyser
+3. semantic analyser
+### features:
+* intermediate code generator
+* ...
+
+1. Lexical parser
+
+# Grammaire :
 
 	D = ("<-" | "=") , "function" , "(" , ["identifier",{(",","identifier")}] , ")", "{" , {STATEMENT} , [RETURN] , "}" 
 		| C | "(" , ARGUMENTS , ")", [";"];
