@@ -1,19 +1,19 @@
-### minicompiler-project-R ll(3)
-## contributers :
+# minicompiler-project-R ll(3)
+### contributers :
 * [Sabir AMHAIDA](https://github.com/sabiramhaida/)
 * [ANAM Aymane](https://github.com/sabiramhaida/anamaymane)
 * [Mohammed ABDELOUHAB](https://github.com/sabiramhaida/Mohammed-Abdelouhab)
 * [Hajar ATBIB](https://github.com/sabiramhaida/hajaratbib)
 
-### Project structure
+## Project structure
 1. Lexical parser
 2. syntaxic analyser
 3. semantic analyser
-### features:
+## features:
 * intermediate code generator
 * ...
 
-### 1. Lexical parser
+## 1. Lexical parser
 
 # Grammaire :
 
