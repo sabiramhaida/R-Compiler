@@ -1,9 +1,9 @@
 # minicompiler-project-R ll(3)
 ### contributers :
 * [Sabir AMHAIDA](https://github.com/sabiramhaida/)
-* [ANAM Aymane](https://github.com/sabiramhaida/anamaymane)
-* [Mohammed ABDELOUHAB](https://github.com/sabiramhaida/Mohammed-Abdelouhab)
-* [Hajar ATBIB](https://github.com/sabiramhaida/hajaratbib)
+* [ANAM Aymane](https://github.com/anamaymane)
+* [Mohammed ABDELOUHAB](https://github.com/Mohammed-Abdelouhab)
+* [Hajar ATBIB](https://github.com/hajaratbib)
 
 ## Project structure
 1. Lexical parser
