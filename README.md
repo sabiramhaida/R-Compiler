@@ -1,4 +1,10 @@
 ### minicompiler-project-R ll(3)
+## contributers :
+* @sabiramhaida
+* @anamaymane
+* @Mohammed-Abdelouhab
+* @hajaratbib
+
 ### Project structure
 1. Lexical parser
 2. syntaxic analyser
@@ -7,7 +13,7 @@
 * intermediate code generator
 * ...
 
-1. Lexical parser
+### 1. Lexical parser
 
 # Grammaire :
 
